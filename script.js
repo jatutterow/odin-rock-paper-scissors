@@ -16,13 +16,6 @@ function computerPlay(){
     return selection;
 }
 
-function playerPlay(){
-    let selection = prompt("Rock, paper, scissors.");
-    selection = selection.toLowerCase();
-
-    return selection;
-}
-
 function playRound(p1Selection, p2Selection){
     if(p1Selection == p2Selection){
         //tie
@@ -60,55 +53,50 @@ function playRound(p1Selection, p2Selection){
     }
 }
 //main
-function game(){
-    let playerScore = 0;
-    let computerScore = 0;
-    let output;
-
-    for(let i = 0; i < 5; i++){
-        //each player chooses
-        let playerSelection = playerPlay()
-        let computerSelection = computerPlay()
-        //find who wins
-        let outcome = playRound(playerSelection, computerSelection);
-        //construct output string & tally score
-        output = "";
-
-        if(outcome == -1){
-            output += "You Win!";
-            playerScore ++;
-        }
-        else if(outcome == 0){
-            output += "Tie!";
-        }
-        else if(outcome == 1){
-            output += "Computer Wins!";
-            computerScore ++;
-        }
-
-        output += (" Player: " + playerSelection);
-        output += (", Computer: " + computerSelection);
-
-        //Tell round winner
-        console.log(output);
+function game(playerSelection){
+    let resultDisplay = document.querySelector('.result');
+    let playerScoreDisplay = document.querySelector('.playerScore');
+    let computerScoreDisplay = document.querySelector('.computerScore');
+    
+    let computerSelection = computerPlay();
+    //Read the current score
+    let playerScore = playerScoreDisplay.textContent;
+    let computerScore = computerScoreDisplay.textContent;
+    
+    let outcome = playRound(playerSelection, computerSelection);
+    let output = "";
+    //Add winner to output & increase score
+    if(outcome == -1){
+        output += "You Win!";
+        playerScore ++;
     }
-    output = "";
-    //Determine match winner & construct output string
-    if(playerScore > computerScore){
-        output += "You won the match!";
+    else if(outcome == 0){
+        output += "Tie!";
     }
-    if(playerScore == computerScore){
-        output += "It's a tie!";
+    else if(outcome == 1){
+        output += "Computer Wins!";
+        computerScore ++;
     }
-    if(playerScore < computerScore){
-        output += "The computer won the match!";
-    }
+    //Add moves to output
+    output += (" Player: " + playerSelection);
+    output += (", Computer: " + computerSelection);
 
-    output += (" Player Score: " + playerScore);
-    output += (", Computer Score: " + computerScore);
-
-    //Announce winner & scores
-    console.log(output);
+    // Tell round winner & update scores
+    resultDisplay.textContent = output;
+    playerScoreDisplay.textContent = playerScore;
+    computerScoreDisplay.textContent = computerScore;
 }
 
-game();
+function init(){
+    let selectButtons = document.querySelectorAll('.select');
+    selectButtons.forEach((button) => {
+        button.addEventListener('click', playerSelect);
+    });
+}
+
+function playerSelect(e){
+    //Start a round, using whichever button was clicked
+    game(e.target.id);
+}
+
+init();
